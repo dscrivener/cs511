@@ -1,6 +1,8 @@
 import Mathlib.Data.Real.Basic
-
-attribute [-instance] Int.instDivInt_1 Int.instDivInt EuclideanDomain.instDiv Nat.instDivNat
+import Library.Tactic.Extra
+import Library.Tactic.Numbers
+import Library.Tactic.Addarith
+import Library.Tactic.Cancel
 
 example {x : ℤ} (h1 : x + 4 = 2) : x = -2 :=
   calc

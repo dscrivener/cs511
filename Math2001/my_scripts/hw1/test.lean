@@ -4,9 +4,12 @@ import Library.Tactic.Numbers
 import Library.Tactic.Addarith
 import Library.Tactic.Cancel
 
-example {p q r : Prop} (h : p → (q → r)) : (p → q) → (p → r) := by
+example {p q : Prop} (h_p : p) : q → (p ∧ q) := by
+  intro h_q
+  apply And.intro h_p h_q
+
+example {p q r : Prop} (h : p → (q → r)) : p ∧ q → r := by
   intro h_pq
-  intro h_p
-  have h_q : q := by apply h_pq h_p
+  obtain ⟨h_p, h_q⟩ := h_pq
   have h_qr : q → r := by apply h h_p
   apply h_qr h_q
