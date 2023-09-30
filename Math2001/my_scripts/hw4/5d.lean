@@ -10,6 +10,8 @@ import Library.Tactic.Addarith
 import Library.Tactic.Cancel
 import Library.Tactic.Use
 
+notation3 (prettyPrint := false) "forall_sufficiently_large "(...)", "r:(scoped P => ∃ C, ∀ x ≥ C, P x) => r
+
 -- 4.1.10 Ex. 4
 
 example : forall_sufficiently_large x : ℝ, x ^ 3 + 3 * x ≥ 7 * x ^ 2 + 12 := by
