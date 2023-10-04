@@ -13,4 +13,9 @@ import Library.Tactic.Use
 -- Example 3.1.4
 
 example {n : ℤ} (hn : Odd n) : Odd (7 * n - 4) := by
-  sorry
+  dsimp [Odd]
+  obtain ⟨k, hk⟩ := hn
+  use 7 * k + 1
+  calc
+    7 * n - 4 = 7 * (2 * k + 1) - 4 := by rw [hk]
+    _ = 2 * (7 * k + 1) + 1 := by ring

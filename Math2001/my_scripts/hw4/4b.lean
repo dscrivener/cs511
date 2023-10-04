@@ -13,4 +13,10 @@ import Library.Tactic.Use
 -- Example 3.1.6
 
 example {x y : ℤ} (hx : Odd x) (hy : Odd y) : Odd (x * y + 2 * y) := by
-  sorry
+  dsimp [Odd] at *
+  obtain ⟨k_1, hk_1⟩ := hx
+  obtain ⟨k_2, hk_2⟩ := hy
+  use 2 * k_1 * k_2 + 3 * k_2 + k_1 + 1
+  calc
+    x * y + 2 * y = (2 * k_1 + 1) * (2 * k_2 + 1) + 2 * (2 * k_2 + 1) := by rw [hk_1, hk_2]
+    _ = 2 * (2 * k_1 * k_2 + 3 * k_2 + k_1 + 1) + 1 := by ring
