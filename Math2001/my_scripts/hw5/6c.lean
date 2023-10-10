@@ -14,4 +14,10 @@ import Library.Tactic.Use
 
 example {x y : ℝ} (n : ℕ) (hx : 0 ≤ x) (hn : 0 < n) (h : y ^ n ≤ x ^ n) :
     y ≤ x := by
-  sorry
+  have h_cases := le_or_lt y x
+  cases h_cases with
+  | inl h_ylex => apply h_ylex
+  | inr h_ygtx =>
+    have h_contra_1 : x ^ n < y ^ n := by rel [h_ygtx]
+    have h_contra_2 := not_le_of_lt h_contra_1
+    contradiction
