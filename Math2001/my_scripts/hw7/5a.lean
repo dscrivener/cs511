@@ -16,4 +16,10 @@ import Library.Tactic.Use
 example {p : ℕ} (k : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hk : k ∣ p) : ¬ Prime p := by
   dsimp [Prime]
   push_neg
-  sorry
+  intro h_p_le_2
+  use k
+  constructor
+  · apply hk
+  · constructor
+    · apply hk1
+    · apply hkp 
