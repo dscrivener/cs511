@@ -25,7 +25,3 @@ theorem problem5b : ∀ n : ℕ, ∃ j, n ≥ 1 → first_n_odd_nats n = j ^ 2 :
     ring
     calc
       1 + k * 2 + first_n_odd_nats k = 1 + k * 2 + k ^ 2 := by rw [IH]
-
-
-
-    
