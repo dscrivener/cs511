@@ -11,7 +11,7 @@ notation3 (prettyPrint := false) "forall_sufficiently_large "(...)", "r:(scoped 
 
 -- Example 6.1.6
 
-example : forall_sufficiently_large n : ℕ, 2 ^ n ≥ n ^ 2 := by
+theorem problem4b : forall_sufficiently_large n : ℕ, 2 ^ n ≥ n ^ 2 := by
   dsimp
   use 4
   intro n hn

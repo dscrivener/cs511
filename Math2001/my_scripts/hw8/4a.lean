@@ -9,7 +9,7 @@ import Library.Tactic.Use
 
 -- Example 6.1.3
 
-example {a b d : ℤ} (h : a ≡ b [ZMOD d]) (n : ℕ) : a ^ n ≡ b ^ n [ZMOD d] := by
+theorem problem4a {a b d : ℤ} (h : a ≡ b [ZMOD d]) (n : ℕ) : a ^ n ≡ b ^ n [ZMOD d] := by
   simple_induction n with k IH
   · -- base case
     use 0

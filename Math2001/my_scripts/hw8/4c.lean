@@ -9,7 +9,7 @@ import Library.Tactic.Use
 
 -- 6.1.7, Exercise 2
 
-example {a : ℝ} (ha : -1 ≤ a) (n : ℕ) : (1 + a) ^ n ≥ 1 + n * a := by
+theorem problem4c {a : ℝ} (ha : -1 ≤ a) (n : ℕ) : (1 + a) ^ n ≥ 1 + n * a := by
   simple_induction n with k IH
   · ring
     numbers
