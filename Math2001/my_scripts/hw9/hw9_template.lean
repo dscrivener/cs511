@@ -35,10 +35,18 @@ def S : ℕ → ℚ
 /- 3 points -/
 -- 6.2.7, Exercise 5
 theorem problem4b (n : ℕ) : S n = 2 - 1 / 2 ^ n := by
-  sorry
+  simple_induction n with k IH
+  · dsimp [S]
+    numbers
+  · calc
+      S (k + 1) = S k + 1 / 2 ^ (k + 1) := by rw [S]
+      _ = (2 - 1 / 2 ^ k) + 1 / 2 ^ (k + 1) := by rw [IH]
+      _ = 2 - 1 / 2 ^ (k + 1) := by ring
 
 /- 3 points -/
 theorem problem4c (n : ℕ) : S n ≤ 2 := by
+  rw [problem4b]
+  have h_nn : 1 / 2 ^ n ≥ 0 := by extra
   sorry
 
 def factorial : ℕ → ℕ
@@ -50,7 +58,15 @@ notation:10000 n "!" => factorial n
 /- 3 points -/
 -- 6.2.7, Exercise 8
 theorem problem4d (n : ℕ) : (n + 1) ! ≤ (n + 1) ^ n := by
-  sorry
+  simple_induction n with k IH
+  · dsimp [factorial]
+    numbers
+  · calc
+      (k + 1 + 1)! = (k + 1 + 1) * (k + 1)! := by rw [factorial]
+      _ = (k + 2) * (k + 1)! := by extra
+      _ ≤ (k + 2) * (k + 1) ^ k := by rel [IH]
+      _ ≤ (k + 2) * (k + 2) ^ k := by sorry
+      _ = (k + 2) ^ (k + 1) := by ring
 
 def q : ℕ → ℤ
   | 0 => 1
@@ -60,7 +76,16 @@ def q : ℕ → ℤ
 /- 3 points -/
 -- 6.3.6, Exercise 4
 theorem problem5a (n : ℕ) : q n = (n:ℤ) ^ 3 + 1 := by
-  sorry
+  two_step_induction n with k IH1 IH2
+  · dsimp [q]
+    numbers
+  · dsimp [q]
+    numbers
+  · calc
+      q (k + 1 + 1) = 2 * q (k + 1) - q k + 6 * k + 6 := by rw [q]
+      _ = 2 * q (k + 1) - (↑k ^ 3 + 1) + 6 * k + 6 := by rw [IH1]
+      _ = 2 * ((↑k + 1) ^ 3 + 1) - (↑k ^ 3 + 1) + 6 * k + 6 := by rw [IH2]
+      _ = (↑k + 1 + 1) ^ 3 + 1 := by ring
 
 def r : ℕ → ℤ
   | 0 => 2
@@ -70,9 +95,70 @@ def r : ℕ → ℤ
 /- 3 points -/
 -- 6.3.6, Exercise 7
 theorem problem5b : forall_sufficiently_large n : ℕ, r n ≥ 2 ^ n := by
-  sorry
+  use 7
+  intro x
+  intro h_ge
+  two_step_induction_from_starting_point x, h_ge with k hk IH1 IH2
+  · dsimp [r]
+    numbers
+  · dsimp [r]
+    numbers
+  · calc
+      r (k + 1 + 1) = 2 * r (k + 1) + r k := by rw [r]
+      _ ≥ 2 * r (k + 1) + 2 ^ k := by rel [IH1]
+      _ ≥ 2 * 2 ^ (k + 1) + 2 ^ k := by rel [IH2]
+      _ = 2 ^ (k + 2) + 2 ^ k := by ring
+      _ = 2 ^ (k + 1 + 1) + 2 ^ k := by extra
+      _ ≥ 2 ^ (k + 1 + 1) := by extra
 
 /- 3 points -/
 -- 6.4.3, Exercise 1
 theorem problem5c (n : ℕ) (hn : 0 < n) : ∃ a x, Odd x ∧ n = 2 ^ a * x := by
-  sorry
+  obtain h_n_even | h_n_odd := Nat.even_or_odd n
+  · obtain ⟨b, h_b⟩ := h_n_even 
+    obtain h_b_even | h_b_odd := Nat.even_or_odd b
+    · have IH1 := problem5c b
+      have b_ge_0 : (b ≥ 0) := by extra
+      have b_g_0 : (b > 0) := by
+        have b_cases := le_or_succ_le b 0
+        cases b_cases with
+        | inl l => 
+          have b_0 : b = 0 := by apply le_antisymm l b_ge_0
+          have n_0 : n = 0 := by
+            calc
+              n = 2 * b := by rw [h_b]
+              _ = 2 * 0 := by rw [b_0]
+          have h_ge_0 : (n ≤ 0) := by
+            calc
+              n = 0 := by rel [n_0]
+              _ ≤ 0 := by numbers
+          have h_n_ge_0 : ¬(n > 0) := not_lt_of_ge h_ge_0
+          contradiction
+        | inr r => apply r
+      have IH1_mod : ∃ a x, Odd x ∧ b = 2 ^ a * x := by
+        apply IH1
+        apply b_g_0
+      obtain ⟨a_works, IH1_mod⟩ := IH1_mod
+      obtain ⟨x_works, IH1_mod⟩ := IH1_mod
+      obtain ⟨h_x_odd, h_eq⟩ := IH1_mod
+      use a_works + 1
+      use x_works
+      constructor
+      · apply h_x_odd
+      · calc
+          n = 2 * b := by rw [h_b]
+          _ = 2 * (2 ^ a_works * x_works) := by rw [h_eq]
+          _ = 2 ^ (a_works + 1) * x_works := by ring
+    · use 1
+      use b
+      constructor
+      · apply h_b_odd
+      · calc
+          n = 2 * b := by rw [h_b]
+          _ = (2 ^ 1) * b := by extra
+  · use 0
+    use n
+    constructor
+    · apply h_n_odd
+    · numbers
+      ring
