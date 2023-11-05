@@ -46,8 +46,10 @@ theorem problem4b (n : ℕ) : S n = 2 - 1 / 2 ^ n := by
 /- 3 points -/
 theorem problem4c (n : ℕ) : S n ≤ 2 := by
   rw [problem4b]
-  have h_nn : 1 / 2 ^ n ≥ 0 := by extra
-  sorry
+  have h_nn : 1 / 2 ^ n ≥ (0 : ℚ) := by extra
+  calc
+    (2 : ℚ) - 1 / 2 ^ n = 2 - (1 / 2 ^ n) := by ring
+    _ ≤ 2 := by addarith [h_nn]
 
 def factorial : ℕ → ℕ
   | 0 => 1
@@ -61,11 +63,17 @@ theorem problem4d (n : ℕ) : (n + 1) ! ≤ (n + 1) ^ n := by
   simple_induction n with k IH
   · dsimp [factorial]
     numbers
-  · calc
+  · have h_k2_k1 : (k + 2) >= (k + 1) := by
+      have h_cases := lt_or_le (k + 2) (k + 1)
+      cases h_cases with
+      | inl l => addarith
+      | inr r => apply r 
+    have h_base : (k + 2) ^ k ≥ (k + 1) ^ k := by rel [h_k2_k1]
+    calc
       (k + 1 + 1)! = (k + 1 + 1) * (k + 1)! := by rw [factorial]
       _ = (k + 2) * (k + 1)! := by extra
       _ ≤ (k + 2) * (k + 1) ^ k := by rel [IH]
-      _ ≤ (k + 2) * (k + 2) ^ k := by sorry
+      _ ≤ (k + 2) * (k + 2) ^ k := by rel [h_base]
       _ = (k + 2) ^ (k + 1) := by ring
 
 def q : ℕ → ℤ
