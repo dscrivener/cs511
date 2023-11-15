@@ -110,7 +110,9 @@ theorem problem4a (n : ℤ) : T n = n ^ 2 := by
     rw [IH]
     ring
   · -- not 0 < n, 0 < -n
-    sorry
+    have IH := problem4a (-n)
+    rw [IH]
+    ring
   · -- not 0 < n, not 0 <-n
     have h_0_1 : 0 ≥ n := le_of_not_lt h1
     have h_0_2' : 0 ≥ -n := le_of_not_lt h2
@@ -118,6 +120,7 @@ theorem problem4a (n : ℤ) : T n = n ^ 2 := by
     have h_0 : n = 0 := le_antisymm h_0_1 h_0_2
     rw [h_0]
     numbers
+    termination_by _ n => 3 * n - 1
 
 /- Hint:  prove uniqueness, then use it to prove problem4b -/
 
@@ -138,7 +141,26 @@ theorem uniqueness (a b : ℤ) (h : 0 < b) {r s : ℤ}
     obtain ⟨h_s1, h_s2, h_s3⟩ := hs
     obtain ⟨q1, h_q1⟩ := h_r3
     obtain ⟨q2, h_q2⟩ := h_s3
-    sorry
+    have h_lower : b * q2 > b * (q1 - 1) := by
+      calc
+        b * q2 = a - s := by rw [h_q2]
+        _ > a - b := by rel [h_s2]
+        _ = (a - r) + r - b := by ring
+        _ = (b * q1) + r - b := by rw [h_q1]
+        _ ≥ (b * q1) - b := by extra
+        _ = b * (q1 - 1) := by ring
+    have h_upper : b * q2 < b * (q1 + 1) := by
+      calc
+        b * q2 = a - s := by rw [h_q2]
+        _ ≤ a := by addarith [h_s1]
+        _ < (a - r) + b := by addarith [h_r2]
+        _ = (b * q1) + b := by rw [h_q1]
+        _ = b * (q1 + 1) := by ring
+    cancel b at h_lower
+    cancel b at h_upper
+    have h_q_eq : q1 = q2 := by addarith [h_lower, h_upper]
+    rw [h_q_eq] at h_q1
+    addarith [h_q1, h_q2]
 
 /- 5 points -/
 theorem problem4b (a b : ℤ) (h : 0 < b) : ∃! r : ℤ, 0 ≤ r ∧ r < b ∧ a ≡ r [ZMOD b] := by
