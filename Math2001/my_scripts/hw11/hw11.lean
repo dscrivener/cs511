@@ -17,9 +17,8 @@ import Library.Tactic.Addarith
 import Library.Tactic.Cancel
 import Library.Tactic.Use
 
-def Injective (f : X → Y) : Prop := ∀ {x1 x2 : X}, f x1 = f x2 → x1 = x2
-
-def Surjective (f : X → Y) : Prop := ∀ y : Y, ∃ x : X, f x = y
+set_option push_neg.use_distrib true
+open Function
 
 -- 8.1.13, Exercise 15 (Prove or disprove)
 -- Going to disprove: can no longer map to odd numbers
@@ -111,8 +110,6 @@ theorem problem4d {f : X → ℕ} {x0 : X} (h0 : f x0 = 0) {i : X → X}
     rw [hi]
     rw [h_prev]
 
-def Bijective (f : X → Y) : Prop := Injective f ∧ Surjective f
-
 -- 8.2.8, Exercise 1
 -- Going to prove positive version
 theorem problem5a : Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
@@ -133,7 +130,7 @@ theorem problem5a : Bijective (fun (x : ℝ) ↦ 4 - 3 * x) := by
 theorem problem5b : ¬ Bijective (fun (x : ℝ) ↦ x ^ 2 + 2 * x) := by
   dsimp [Bijective, Injective, Surjective]
   push_neg
-  intro h
+  right
   use -2
   intro x
   apply ne_of_gt
